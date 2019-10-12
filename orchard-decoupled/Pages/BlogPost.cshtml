@@ -1,0 +1,31 @@
+﻿@page "/blogposts/{alias}"
+@inject OrchardCore.IOrchardHelper Orchard
+@{
+    ViewData["Title"] = "BlogPost";
+}
+
+@{
+    var blogPost = await Orchard.GetContentItemByAliasAsync($"alias:{alias}");
+}
+
+<h1>@blogPost.DisplayText</h1>
+
+<article>
+    @await Orchard.MarkdownToHtmlAsync((string)blogPost.Content.MarkdownBodyPart.Markdown);
+</article>
+
+We have cookies and we give them to you.
+
+@section Meta {
+    <!--https://ogp.me/-->
+    <meta property="og:url" content="@Request.Path" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="@blogPost.DisplayText" />
+    <meta property="og:description" content="Description will go here..." />
+    <meta property="og:image" content="https://ogp.me/logo.png" />
+}
+
+@functions {
+    [FromRoute]
+    public string alias { get; set; }
+}
